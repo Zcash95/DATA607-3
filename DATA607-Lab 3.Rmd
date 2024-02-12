@@ -1,0 +1,93 @@
+---
+title: "DATA607-Lab3"
+output: html_document
+date: "2024-02-08"
+author: "Biyag Dukuray"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data 607 Lab 3
+
+#1. 
+Using the 173 majors listed in fivethirtyeight.com’s College Majors dataset [https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/], provide code that identifies the majors that contain either "DATA" or "STATISTICS"
+
+
+I will begin this problem by importing the data and loading the tidyverse package which includes the tools that can be used to tidy and do many other things with the data. I'll be using a function to identify which majors include either the words data or statistics in the majors column in the dataset. Below is the link for the Github page of the dataset that I used.  
+
+https://github.com/fivethirtyeight/data/tree/master/college-majors
+
+
+I will load the tidyverse library and import this into a data frame I will call college_majors. I will then use the grep funtion to search the college_majors data set and the column containing the majors with the terms data or statistics in it. The 3 majors containing either data or statistics are MANAGEMENT INFORMATION SYSTEMS AND STATISTICS, COMPUTER PROGRAMMING AND DATA PROCESSING, STATISTICS AND DECISION SCIENCE.
+
+```{r}
+library(tidyverse)
+college_majors <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/college-majors/majors-list.csv", quote = "")
+view(college_majors)
+data_statistics_majors <- grep(pattern = 'data|statistics', college_majors$Major, value = TRUE, ignore.case = TRUE)
+view(data_statistics_majors)
+```
+
+#2
+Write code that transforms the data below:
+[1] "bell pepper"  "bilberry"     "blackberry"   "blood orange"
+[5] "blueberry"    "cantaloupe"   "chili pepper" "cloudberry"  
+[9] "elderberry"   "lime"         "lychee"       "mulberry"    
+[13] "olive"        "salal berry"
+Into a format like this:
+c("bell pepper", "bilberry", "blackberry", "blood orange", "blueberry", "cantaloupe", "chili pepper", "cloudberry", "elderberry", "lime", "lychee", "mulberry", "olive", "salal berry")
+
+We will start by putting the data into a dataframe we will call fruits. We will then create fruits_copyone and fruits_copytwo to help us clean the data to prepare it for the final format we want. We will then use the paste0 function which will concatenate the characters of dataframe fruits_copytwo. We entered this into final dataframe fruits_final in the format we need.
+
+```{r}
+fruits <- '[1] "bell pepper"  "bilberry"     "blackberry"   "blood orange"
+
++ [5] "blueberry"    "cantaloupe"   "chili pepper" "cloudberry"  
+
++ [9] "elderberry"   "lime"         "lychee"       "mulberry"    
+
++ [13] "olive"        "salal berry"'
+view(fruits)
+fruits_copyone <- unlist(str_extract_all(fruits, pattern = "\"([a-z]+.[a-z]+)\""))
+fruits_copytwo <- str_remove_all(fruits_copyone, "\"")
+fruits_Final <- paste0('c("', fruits_copytwo, '")', collapse = ', ')
+view(fruits_Final)
+```
+
+#3
+ Describe, in words, what these expressions will match:
+
+(.)\1\1                       Solution: Any string that has three back to back identical characters will match this regex. Example: "aaabbb" 
+
+(.)(.)\\2\\1                Solution: Any string that has two characters in the same sequence followed by the same two characters in reverse will match this regex. Example: "abba" 
+
+(..)\1                        Solution: Any string that contains four back to back identical characters will match this regex. Example: "aaaa" or "bbbb" .
+
+(.).\\1.\\1                 Solution: Any string where the first and third characters are the same and separated by any character will match this regex. Example: "xyx" 
+
+(.)(.)(.).*\\3\\2\\1        Solution: Any string where the first three characters are followed by any sequence of characters and then followed by the same three characters as the starting characters in reverse order will match this regex. Example: "abccba" 
+
+```{r}
+```
+
+#4
+Construct regular expressions to match words that:
+
+  Start and end with the same character.
+
+  Contain a repeated pair of letters (e.g. "church" contains "ch" repeated twice.)
+
+  Contain one letter repeated in at least three places (e.g. "eleven" contains three "e"s.)
+
+```{r}
+str_view("noon", "^(.)(.*)\\1$")
+
+str_view("possessed", "([A-Za-z][A-Za-z]).*\\1")
+
+str_view("possession", "([A-Za-z]).*\\1.*\\1.")
+
+```
+
+
